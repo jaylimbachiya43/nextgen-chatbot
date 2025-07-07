@@ -1,0 +1,21 @@
+{
+    "compilerOptions": {
+      "outDir": "dist",
+      "module": "CommonJS",
+      "target": "ES6",
+      "declaration": true,
+      "jsx": "react-jsx",
+      "esModuleInterop": true,
+      "moduleResolution": "node",
+      "skipLibCheck": true,
+      "types": ["node", "react"],
+      "allowSyntheticDefaultImports": true,
+      "strict": false,
+      "forceConsistentCasingInFileNames": true,
+      "resolveJsonModule": true,
+      "isolatedModules": true
+    },
+    "include": ["src"],
+    "exclude": ["node_modules", "dist"]
+  }
+  

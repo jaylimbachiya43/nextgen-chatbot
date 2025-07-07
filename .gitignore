@@ -1,0 +1,32 @@
+# Node
+node_modules/
+
+# Build output
+dist/
+.next/
+
+# Env files
+.env*
+
+# Logs
+*.log
+
+# Mac system files
+.DS_Store
+
+# TypeScript
+*.tsbuildinfo
+
+# Editor swap files
+*.swp
+
+# Test coverage
+coverage/
+
+# Misc
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# VSCode
+.vscode/ 

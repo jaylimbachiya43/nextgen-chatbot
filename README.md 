@@ -1,0 +1,22 @@
+# 🧠 Next Chatbot (AI-Powered Chat Assistant)
+
+A plug-and-play AI chatbot assistant for Next.js powered by [Google Gemini](https://ai.google.dev/). Just install, configure your API key, and you're good to go!
+
+---
+
+## 🚀 Features
+
+- ✨ Powered by [@google/generative-ai](https://www.npmjs.com/package/@google/generative-ai)
+- ⚙️ Easy to integrate into any Next.js project
+- 💬 Supports custom chat history/context
+- 🔐 Works with your `.env` configuration
+- 🧩 Extendable with custom UI or logic
+
+---
+
+## 📦 Installation
+
+### 1. Install the required package:
+
+```bash
+npm install @google/generative-ai

@@ -1,22 +1,26 @@
-# 🧠 Next Chatbot (AI-Powered Chat Assistant)
+# NextGen Chatbot
 
-A plug-and-play AI chatbot assistant for Next.js powered by [Google Gemini](https://ai.google.dev/). Just install, configure your API key, and you're good to go!
+A production-ready, customizable chatbot component for Next.js applications with Google's Gemini AI integration.
 
----
+[![npm version](https://img.shields.io/npm/v/nextgen-chatbot.svg)](https://www.npmjs.com/package/nextgen-chatbot)
+[![npm downloads](https://img.shields.io/npm/dm/nextgen-chatbot.svg)](https://www.npmjs.com/package/nextgen-chatbot)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## 🚀 Features
+## Features
 
-- ✨ Powered by [@google/generative-ai](https://www.npmjs.com/package/@google/generative-ai)
-- ⚙️ Easy to integrate into any Next.js project
-- 💬 Supports custom chat history/context
-- 🔐 Works with your `.env` configuration
-- 🧩 Extendable with custom UI or logic
+- 🚀 **Easy Integration**: Drop-in component for any Next.js app
+- 🎨 **Fully Customizable**: Style it to match your brand with CSS variables
+- 📦 **Flexible Knowledge**: Use any JSON structure for company knowledge
+- 🌙 **Dark Mode Support**: Built-in light/dark themes
+- ⚡ **Rate Limiting**: Built-in rate limit protection
+- 💾 **Message Persistence**: Optional local storage for conversation history
+- 📱 **Mobile Responsive**: Works perfectly on all devices
+- ♿ **Accessible**: ARIA labels and keyboard navigation
+- 🔧 **TypeScript Ready**: Full type definitions included
+- 🤖 **AI-Powered**: Built on Google's Gemini AI for intelligent responses
+- 🎯 **Positioning**: Choose from 4 different corner positions
 
----
-
-## 📦 Installation
-
-### 1. Install the required package:
+## Installation
 
 ```bash
-npm install @google/generative-ai
+npm install nextgen-chatbot

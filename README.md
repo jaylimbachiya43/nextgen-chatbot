@@ -1,28 +1,102 @@
 # NextGen Chatbot
 
-A powerful, customizable chatbot component for Next.js applications that integrates with Google's Gemini AI. Easily add an intelligent virtual assistant to your website with your own company knowledge and branding.
+<div align="center">
 
-## Features
+[![npm version](https://img.shields.io/npm/v/nextgen-chatbot.svg)](https://www.npmjs.com/package/nextgen-chatbot)
+[![npm downloads](https://img.shields.io/npm/dm/nextgen-chatbot.svg)](https://www.npmjs.com/package/nextgen-chatbot)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org/)
+[![Next.js](https://img.shields.io/badge/Next.js-13+-black.svg)](https://nextjs.org/)
 
-- 🤖 **AI-Powered**: Built on Google's Gemini AI for intelligent responses
-- 🎨 **Customizable**: Fully customizable UI and branding
-- 📚 **Knowledge Base**: Train the chatbot with your company's specific information
-- 🔧 **Easy Integration**: Simple setup with minimal configuration
-- 📱 **Responsive**: Works perfectly on desktop and mobile devices
-- 🎯 **Positioning**: Choose from 4 different corner positions
-- 🔒 **Secure**: API keys are handled securely on the client side
+**A production-ready, customizable chatbot component for Next.js applications with Google's Gemini AI integration.**
 
-## Installation
+[Demo](https://your-demo-link.com) • [Documentation](#documentation) • [Examples](#examples) • [Report Bug](https://github.com/yourusername/nextgen-chatbot/issues)
+
+</div>
+
+---
+
+## 📋 Table of Contents
+
+- [Features](#features)
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [Common Issues & Solutions](#common-issues--solutions)
+- [Advanced Configuration](#advanced-configuration)
+- [Knowledge Base](#knowledge-base)
+- [Styling & Customization](#styling--customization)
+- [Examples](#examples)
+- [API Reference](#api-reference)
+- [Contributing](#contributing)
+- [License](#license)
+
+---
+
+## ✨ Features
+
+| Feature | Description |
+|---------|-------------|
+| 🚀 **Easy Integration** | Drop-in component for any Next.js app (App Router & Pages Router) |
+| 🎨 **Fully Customizable** | Style it to match your brand with CSS variables |
+| 📦 **Flexible Knowledge** | Use ANY JSON structure for company knowledge - no strict format required |
+| 🌙 **Dark Mode Support** | Built-in light/dark themes with automatic switching |
+| ⚡ **Rate Limiting** | Built-in rate limit protection to prevent API abuse |
+| 💾 **Message Persistence** | Optional local storage for conversation history |
+| 📱 **Mobile Responsive** | Works perfectly on all devices with responsive design |
+| ♿ **Accessible** | ARIA labels, keyboard navigation, and screen reader support |
+| 🔧 **TypeScript Ready** | Full type definitions included |
+| 🤖 **AI-Powered** | Built on Google's Gemini AI for intelligent responses |
+| 🎯 **Positioning** | Choose from 4 different corner positions |
+| 🔒 **Secure** | API keys are handled securely on the client side |
+| 📊 **Usage Tracking** | Monitor token usage and API calls |
+
+---
+
+## 📦 Installation
 
 ```bash
 npm install nextgen-chatbot
-```
+# or
+yarn add nextgen-chatbot
+# or
+pnpm add nextgen-chatbot
+🚀 Quick Start
+⚠️ CRITICAL: API Route Setup
+The chatbot requires an API route to work. If you skip this step, you'll get the dreaded "Unexpected token '<'" error!
 
-## Quick Start
+Step 1: Create the API Route
+For Next.js App Router (app/api/chat/route.ts):
 
-### 1. Basic Setup
+typescript
+import { chatHandler } from 'nextgen-chatbot';
 
-```tsx
+export async function POST(request: Request) {
+  return chatHandler(request);
+}
+For Next.js Pages Router (pages/api/chat.ts):
+
+typescript
+import { chatHandler } from 'nextgen-chatbot';
+import type { NextApiRequest, NextApiResponse } from 'next';
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method === 'POST') {
+    try {
+      const response = await chatHandler(req as any);
+      const data = await response.json();
+      res.status(response.status).json(data);
+    } catch (error) {
+      console.error('API Route Error:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  } else {
+    res.status(405).json({ error: 'Method not allowed' });
+  }
+}
+Step 2: Add the ChatBot to Your Page
+tsx
+'use client';
+
 import { ChatBot } from 'nextgen-chatbot';
 import 'nextgen-chatbot/dist/styles/chat.css';
 
@@ -31,460 +105,530 @@ export default function MyPage() {
     <div>
       <h1>Welcome to my website</h1>
       <ChatBot 
-        apiKey="your-gemini-api-key"
+        apiKey={process.env.NEXT_PUBLIC_GEMINI_API_KEY!}
         companyName="My Company"
       />
     </div>
   );
 }
-```
+Step 3: Get Your Gemini API Key
+Go to Google AI Studio
 
-### 2. Create API Route ⚠️ **IMPORTANT**
+Create a new API key
 
-**You must create this API route file for the chatbot to work!**
+Add it to your .env.local file:
 
-Create a file at `app/api/chat/route.ts` (or `pages/api/chat.ts` for Pages Router):
+env
+NEXT_PUBLIC_GEMINI_API_KEY=your-actual-gemini-api-key-here
+Step 4: Run Your App
+bash
+npm run dev
+❗ Common Issues & Solutions
+Issue 1: "Unexpected token '<'" Error
+Problem: The chatbot tries to call /api/chat but gets an HTML 404 page instead of JSON.
 
-```tsx
+Solution: You forgot to create the API route! Follow Step 1 in Quick Start above.
+
+Quick Fix:
+
+bash
+# Create the API route file
+mkdir -p app/api/chat
+touch app/api/chat/route.ts
+Then add the code from Step 1 and restart your dev server.
+
+Issue 2: "Cannot find module 'next/server'" or TypeScript Errors
+Problem: TypeScript can't find Next.js types when building the package.
+
+Solution: Make sure you have Next.js installed as a dev dependency:
+
+bash
+npm install -D next @types/node @types/react
+Issue 3: CSS Not Loading
+Problem: The chatbot appears but has no styling.
+
+Solution: Import the CSS file correctly:
+
+tsx
+// In your root layout or page
+import 'nextgen-chatbot/dist/styles/chat.css';
+
+// Or use the minified version
+import 'nextgen-chatbot/dist/styles/chat.min.css';
+Issue 4: API Key Error (401)
+Problem: "Invalid API key" or "API key is required" error.
+
+Solution:
+
+Verify your API key in Google AI Studio
+
+Make sure the key is correctly set in .env.local
+
+Check that you're using NEXT_PUBLIC_ prefix for client-side access
+
+Issue 5: Rate Limit Error (429)
+Problem: "Rate limit exceeded" or quota errors.
+
+Solution:
+
+Wait a minute and try again
+
+Check your Gemini API quota in Google Cloud Console
+
+Implement rate limiting in your component:
+
+tsx
+<ChatBot 
+  apiKey="your-key"
+  companyName="My Company"
+  rateLimit={{
+    maxRequestsPerMinute: 30,
+    onRateLimit: () => alert('Please wait a moment...')
+  }}
+/>
+Issue 6: CORS Errors
+Problem: Browser blocks requests due to CORS.
+
+Solution: Add CORS headers to your API route:
+
+typescript
+// app/api/chat/route.ts
 import { chatHandler } from 'nextgen-chatbot';
+import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {
-  return chatHandler(request);
+  const response = await chatHandler(request);
+  
+  // Add CORS headers
+  const headers = new Headers(response.headers);
+  headers.set('Access-Control-Allow-Origin', '*');
+  headers.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  headers.set('Access-Control-Allow-Headers', 'Content-Type');
+  
+  return new NextResponse(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers
+  });
 }
-```
 
-**For Pages Router** (`pages/api/chat.ts`):
-```tsx
-import { chatHandler } from 'nextgen-chatbot';
-import type { NextApiRequest, NextApiResponse } from 'next';
-
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method === 'POST') {
-    const response = await chatHandler(req as any);
-    const data = await response.json();
-    res.status(response.status).json(data);
-  } else {
-    res.status(405).json({ error: 'Method not allowed' });
-  }
+export async function OPTIONS() {
+  return new NextResponse(null, {
+    status: 204,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type'
+    }
+  });
 }
-```
+Issue 7: Knowledge Not Working
+Problem: The AI doesn't use your company information correctly.
 
-**If you get "Unexpected token '<'" errors, it means this API route is missing!** See [API_SETUP.md](./API_SETUP.md) for detailed instructions.
+Solution: You can use ANY JSON structure - no strict format required:
 
-### 3. Get Your Gemini API Key
-
-1. Go to [Google AI Studio](https://makersuite.google.com/app/apikey)
-2. Create a new API key
-3. Use this key in your ChatBot component
-
-## Advanced Usage
-
-### Custom Company Knowledge
-
-```tsx
-import { ChatBot, createCompanyKnowledge } from 'nextgen-chatbot';
-
-const myCompanyKnowledge = createCompanyKnowledge(
-  {
-    name: "TechCorp",
-    description: "Leading technology solutions provider",
-    founded: "2020",
-    location: "San Francisco, CA",
-    industry: "Technology"
+tsx
+// ANY JSON structure works!
+const myKnowledge = {
+  companyName: "TechCorp",
+  founded: 2020,
+  products: [
+    { name: "AI Platform", price: "$999" }
+  ],
+  supportEmail: "help@techcorp.com",
+  holidayHours: {
+    "Christmas": "Closed",
+    "New Year": "10am-2pm"
   },
-  {
-    products: [
-      {
-        name: "Cloud Solutions",
-        description: "Enterprise cloud infrastructure and management",
-        features: ["Scalable", "Secure", "24/7 Support"],
-        benefits: ["Cost Effective", "High Performance", "Easy Management"]
-      }
-    ],
-    faq: [
-      {
-        question: "What services do you offer?",
-        answer: "We provide comprehensive cloud solutions including infrastructure, security, and support."
-      }
-    ]
+  // Add whatever you want!
+  customField: "any value"
+};
+
+<ChatBot 
+  apiKey="your-key"
+  companyName="TechCorp"
+  knowledge={myKnowledge}
+/>
+⚙️ Advanced Configuration
+Complete Props Reference
+tsx
+<ChatBot 
+  // Required
+  apiKey="your-gemini-api-key"
+  companyName="My Company"
+  
+  // Optional - UI Customization
+  welcomeMessage="Hello! How can I help you today?"
+  position="bottom-right" // 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left'
+  theme="light" // 'light' | 'dark' | 'custom'
+  customStyles={{ '--chatbot-primary': '#ff0000' }}
+  disableAnimations={false}
+  
+  // Optional - Knowledge & AI
+  knowledge={yourKnowledgeObject} // Any JSON structure
+  model="gemini-2.0-flash"
+  maxTokens={1000}
+  temperature={0.7}
+  apiEndpoint="/api/chat"
+  systemPrompt="You are a helpful assistant..."
+  
+  // Optional - Features
+  suggestions={[
+    "What services do you offer?",
+    "Contact support",
+    "Business hours"
+  ]}
+  autoOpen={false}
+  
+  // Optional - Storage
+  storage={{
+    enabled: true,
+    key: 'chat_history',
+    maxMessages: 50
+  }}
+  
+  // Optional - Rate Limiting
+  rateLimit={{
+    maxRequestsPerMinute: 30,
+    onRateLimit: () => console.log('Rate limited')
+  }}
+  
+  // Optional - Event Callbacks
+  onMessageSend={(msg) => console.log('Sent:', msg)}
+  onMessageReceive={(msg) => console.log('Received:', msg)}
+  onError={(error) => console.error('Error:', error)}
+  onOpen={() => console.log('Chat opened')}
+  onClose={() => console.log('Chat closed')}
+  
+  // Optional - Localization
+  locale="es"
+  translations={{
+    inputPlaceholder: "Escribe tu mensaje...",
+    send: "Enviar",
+    virtualAssistant: "Asistente Virtual",
+    rateLimited: "Demasiadas solicitudes. Espera un momento.",
+    error: "Error. Intenta de nuevo.",
+    timeout: "Tiempo de espera agotado."
+  }}
+/>
+📚 Knowledge Base
+Using Any JSON Structure
+The chatbot accepts ANY JSON structure - no predefined format required!
+
+tsx
+// Example 1: Simple structure
+const simpleKnowledge = {
+  company: "TechCorp",
+  founded: 2020,
+  services: ["AI", "Cloud", "Consulting"]
+};
+
+// Example 2: Nested structure
+const detailedKnowledge = {
+  company: {
+    name: "TechCorp",
+    details: {
+      founded: 2020,
+      employees: 50,
+      location: "San Francisco"
+    }
+  },
+  products: [
+    {
+      name: "AI Platform",
+      pricing: {
+        basic: "$999/month",
+        enterprise: "Custom"
+      },
+      features: ["ML", "Analytics"]
+    }
+  ],
+  support: {
+    email: "support@techcorp.com",
+    hours: "24/7",
+    holidays: ["Christmas", "New Year"]
   }
-);
+};
 
-export default function MyPage() {
-  return (
-    <ChatBot 
-      apiKey="your-gemini-api-key"
-      companyName="TechCorp"
-      knowledge={myCompanyKnowledge}
-      welcomeMessage="Hello! I'm TechCorp's AI assistant. How can I help you today?"
-    />
-  );
-}
-```
+// Example 3: Flat structure
+const flatKnowledge = {
+  companyName: "TechCorp",
+  foundedYear: 2020,
+  mainProduct: "AI Platform",
+  supportEmail: "help@techcorp.com",
+  phoneNumber: "+1-800-123-4567"
+};
 
-### Using Knowledge Templates
+<ChatBot 
+  apiKey="your-key"
+  companyName="TechCorp"
+  knowledge={simpleKnowledge} // Any of the above works!
+/>
+Using KnowledgeBuilder (Optional)
+For those who prefer a builder pattern:
 
-```tsx
-import { ChatBot, knowledgeTemplates } from 'nextgen-chatbot';
-
-// Use e-commerce template
-const ecommerceKnowledge = knowledgeTemplates.ecommerce("MyStore");
-
-// Use service business template
-const serviceKnowledge = knowledgeTemplates.service("MyService", "We provide professional consulting services");
-
-export default function MyPage() {
-  return (
-    <ChatBot 
-      apiKey="your-gemini-api-key"
-      companyName="MyStore"
-      knowledge={ecommerceKnowledge}
-    />
-  );
-}
-```
-
-### Using KnowledgeBuilder
-
-```tsx
-import { ChatBot, KnowledgeBuilder } from 'nextgen-chatbot';
+tsx
+import { KnowledgeBuilder } from 'nextgen-chatbot';
 
 const knowledge = new KnowledgeBuilder()
-  .setCompany({
-    name: "My Company",
-    description: "We provide amazing services",
-    founded: "2024",
-    location: "New York",
-    industry: "Services"
-  })
-  .addProducts([
-    {
-      name: "Premium Service",
-      description: "Our flagship service offering",
-      features: ["Feature 1", "Feature 2"],
-      benefits: ["Benefit 1", "Benefit 2"]
-    }
-  ])
-  .addFAQ([
-    {
-      question: "How do I get started?",
-      answer: "Contact us for a free consultation!"
-    }
-  ])
+  .add('company', { name: "TechCorp", founded: 2020 })
+  .add('products', [{ name: "AI Platform", price: "$999" }])
+  .add('support', { email: "support@techcorp.com" })
+  .add('customField', 'any value')
   .build();
+Using Templates (Backward Compatibility)
+tsx
+import { knowledgeTemplates } from 'nextgen-chatbot';
 
-export default function MyPage() {
-  return (
-    <ChatBot 
-      apiKey="your-gemini-api-key"
-      companyName="My Company"
-      knowledge={knowledge}
-    />
-  );
+// E-commerce template
+const ecommerceKnowledge = knowledgeTemplates.ecommerce("MyStore");
+
+// Service business template
+const serviceKnowledge = knowledgeTemplates.service(
+  "MyConsulting", 
+  "We provide business consulting services"
+);
+
+// Simple template
+const simpleKnowledge = knowledgeTemplates.simple(
+  "MyCompany", 
+  "We do amazing things"
+);
+🎨 Styling & Customization
+CSS Variables Reference
+Override these variables in your global CSS:
+
+css
+:root {
+  /* Colors */
+  --chatbot-primary: #2563eb;        /* Primary brand color */
+  --chatbot-primary-dark: #1d4ed8;    /* Darker shade for hover */
+  --chatbot-primary-light: #3b82f6;   /* Lighter shade for focus */
+  --chatbot-accent: #4f46e5;          /* Accent color */
+  
+  /* Backgrounds */
+  --chatbot-bg: #ffffff;               /* Main background */
+  --chatbot-bg-secondary: #f9fafb;     /* Secondary background */
+  --chatbot-user-bg: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  --chatbot-assistant-bg: #ffffff;
+  
+  /* Text */
+  --chatbot-text: #1f2937;             /* Primary text */
+  --chatbot-text-secondary: #6b7280;   /* Secondary text */
+  
+  /* Borders */
+  --chatbot-border: #e5e7eb;           /* Border color */
+  --chatbot-assistant-border: #e5e7eb;
+  
+  /* Typography */
+  --chatbot-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --chatbot-font-size-base: 16px;
+  --chatbot-font-size-sm: 14px;
+  --chatbot-font-size-lg: 18px;
+  
+  /* Spacing */
+  --chatbot-spacing-xs: 4px;
+  --chatbot-spacing-sm: 8px;
+  --chatbot-spacing-md: 16px;
+  --chatbot-spacing-lg: 24px;
+  
+  /* Border Radius */
+  --chatbot-radius-sm: 8px;
+  --chatbot-radius-md: 12px;
+  --chatbot-radius-lg: 16px;
+  --chatbot-radius-full: 9999px;
+  
+  /* Shadows */
+  --chatbot-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  
+  /* Animations */
+  --chatbot-transition-fast: 150ms;
+  --chatbot-transition-normal: 250ms;
 }
-```
-
-## Configuration Options
-
-### ChatBot Props
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `apiKey` | `string` | **Required** | Your Gemini API key |
-| `companyName` | `string` | **Required** | Your company name |
-| `welcomeMessage` | `string` | `"Welcome! I'm your virtual assistant..."` | Initial greeting message |
-| `position` | `'bottom-right' \| 'bottom-left' \| 'top-right' \| 'top-left'` | `'bottom-right'` | Chat widget position |
-| `knowledge` | `CompanyKnowledge` | Default demo data | Your company's knowledge base |
-| `apiEndpoint` | `string` | `'/api/chat'` | Custom API endpoint |
-| `model` | `string` | `'gemini-2.0-flash'` | Gemini model to use |
-| `maxTokens` | `number` | `1000` | Maximum response length |
-| `temperature` | `number` | `0.7` | Response creativity (0-1) |
-
-### Company Knowledge Structure
-
-```tsx
-interface CompanyKnowledge {
-  company: {
-    name: string;
-    description: string;
-    founded: string;
-    location: string;
-    industry: string;
-  };
-  products: Array<{
-    name: string;
-    description: string;
-    features?: string[];
-    benefits?: string[];
-    // ... more fields
-  }>;
-  faq: Array<{
-    question: string;
-    answer: string;
-  }>;
-  policies: {
-    refund: string;
-    privacy: string;
-    terms: string;
-  };
-  contact: {
-    email: string;
-    phone: string;
-    address: string;
-    support: {
-      email: string;
-      phone: string;
-    };
-  };
+Dark Theme
+tsx
+<ChatBot 
+  apiKey="your-key"
+  companyName="My Company"
+  theme="dark" // Built-in dark theme
+/>
+Custom Dark Theme
+css
+/* Custom dark theme */
+.chatbot-theme-dark {
+  --chatbot-primary: #3b82f6;
+  --chatbot-bg: #1f2937;
+  --chatbot-bg-secondary: #111827;
+  --chatbot-text: #f9fafb;
+  --chatbot-text-secondary: #9ca3af;
+  --chatbot-border: #374151;
+  --chatbot-assistant-bg: #374151;
 }
-```
-
-## Styling
-
-The chatbot comes with built-in CSS that you need to import. You can import the styles in several ways:
-
-### Method 1: Import CSS directly in your component
-```tsx
+📝 Examples
+Basic Example
+tsx
 import { ChatBot } from 'nextgen-chatbot';
 import 'nextgen-chatbot/dist/styles/chat.css';
 
-export default function MyPage() {
+export default function Home() {
   return (
-    <ChatBot apiKey="your-key" companyName="My Company" />
+    <ChatBot 
+      apiKey={process.env.NEXT_PUBLIC_GEMINI_API_KEY!}
+      companyName="My Company"
+    />
   );
 }
-```
+E-commerce Store
+tsx
+import { ChatBot } from 'nextgen-chatbot';
 
-### Method 2: Import CSS in your main layout (Recommended)
-```tsx
-// In _app.tsx (Pages Router) or layout.tsx (App Router)
-import 'nextgen-chatbot/dist/styles/chat.css';
-
-export default function App({ Component, pageProps }) {
-  return <Component {...pageProps} />;
-}
-```
-
-### Method 3: Import CSS in your global styles
-```css
-/* In your global CSS file */
-@import 'nextgen-chatbot/dist/styles/chat.css';
-```
-
-### Customizing Styles
-
-You can override the default styles by adding your own CSS:
-
-```css
-/* Custom styles */
-.chat-button {
-  background-color: #your-brand-color !important;
-}
-
-.chat-window {
-  border-radius: 12px !important;
-}
-
-.chat-header {
-  background: linear-gradient(45deg, #your-color-1, #your-color-2) !important;
-}
-```
-
-## Environment Variables
-
-For production, consider using environment variables for your API key:
-
-```tsx
-<ChatBot 
-  apiKey={process.env.NEXT_PUBLIC_GEMINI_API_KEY}
-  companyName="My Company"
-/>
-```
-
-## Examples
-
-### E-commerce Store
-```tsx
-import { ChatBot, knowledgeTemplates } from 'nextgen-chatbot';
-
-const storeKnowledge = knowledgeTemplates.ecommerce("MyStore");
-
-<ChatBot 
-  apiKey="your-key"
-  companyName="MyStore"
-  knowledge={storeKnowledge}
-  position="bottom-right"
-/>
-```
-
-### Service Business
-```tsx
-import { ChatBot, knowledgeTemplates } from 'nextgen-chatbot';
-
-const serviceKnowledge = knowledgeTemplates.service(
-  "MyConsulting", 
-  "We provide business consulting and strategy services"
-);
-
-<ChatBot 
-  apiKey="your-key"
-  companyName="MyConsulting"
-  knowledge={serviceKnowledge}
-  welcomeMessage="Hi! I'm here to help with your business needs."
-/>
-```
-
-### Custom Knowledge
-```tsx
-import { ChatBot, createCompanyKnowledge } from 'nextgen-chatbot';
-
-const customKnowledge = createCompanyKnowledge(
-  {
-    name: "My Startup",
-    description: "Innovative tech startup",
-    founded: "2024",
-    location: "Silicon Valley",
-    industry: "Technology"
+const storeKnowledge = {
+  store: {
+    name: "Fashion Store",
+    type: "Clothing Retail",
+    established: 2020
   },
-  {
-    products: [
-      {
-        name: "AI Platform",
-        description: "Our revolutionary AI platform",
-        features: ["Machine Learning", "Real-time Processing", "API Access"],
-        benefits: ["Increased Efficiency", "Cost Savings", "Scalability"]
-      }
-    ],
-    faq: [
-      {
-        question: "What makes your AI platform unique?",
-        answer: "Our platform combines cutting-edge ML with intuitive design."
-      }
-    ]
-  }
-);
+  categories: ["Men", "Women", "Kids"],
+  shipping: {
+    free: "Orders over $50",
+    standard: "$5.99",
+    express: "$12.99"
+  },
+  returnPolicy: "30-day returns",
+  faq: [
+    {
+      question: "How do I track my order?",
+      answer: "You'll receive tracking info via email"
+    }
+  ]
+};
 
-<ChatBot 
-  apiKey="your-key"
-  companyName="My Startup"
-  knowledge={customKnowledge}
-/>
-```
-
-## Customizing the Chatbot UI
-
-The chatbot uses CSS variables for all key colors, fonts, and spacing. You can easily override these in your own CSS to match your brand.
-
-### Example: Change Primary Color and Font
-
-```css
-:root {
-  --chatbot-primary: #0d9488; /* teal */
-  --chatbot-accent: #0ea5e9;  /* sky blue */
-  --chatbot-font: 'Roboto', Arial, sans-serif;
+export default function Store() {
+  return (
+    <ChatBot 
+      apiKey={process.env.NEXT_PUBLIC_GEMINI_API_KEY!}
+      companyName="Fashion Store"
+      knowledge={storeKnowledge}
+      suggestions={[
+        "Track my order",
+        "Return policy",
+        "Shipping options",
+        "Size guide"
+      ]}
+    />
+  );
 }
-```
+SaaS Application
+tsx
+import { ChatBot, KnowledgeBuilder } from 'nextgen-chatbot';
 
-Add this to your global CSS file or inside a selector that wraps your app.
+const saasKnowledge = new KnowledgeBuilder()
+  .add('product', {
+    name: "Analytics Pro",
+    features: ["Dashboard", "Reports", "API Access"],
+    pricing: {
+      starter: "$29/month",
+      pro: "$99/month",
+      enterprise: "Custom"
+    }
+  })
+  .add('technical', {
+    api: "https://api.analyticspro.com",
+    docs: "https://docs.analyticspro.com",
+    status: "https://status.analyticspro.com"
+  })
+  .add('support', {
+    email: "help@analyticspro.com",
+    slack: "analyticspro.slack.com",
+    hours: "24/7 for enterprise"
+  })
+  .build();
 
-### All Available CSS Variables
-
-```css
-:root {
-  --chatbot-primary: #2563eb;
-  --chatbot-primary-dark: #1d4ed8;
-  --chatbot-accent: #4f46e5;
-  --chatbot-bg: #fff;
-  --chatbot-bg-alt: #f9fafb;
-  --chatbot-border: #e5e7eb;
-  --chatbot-user-bg: linear-gradient(to right, var(--chatbot-accent), var(--chatbot-primary));
-  --chatbot-assistant-bg: #fff;
-  --chatbot-assistant-border: #e5e7eb;
-  --chatbot-unread-bg: #ef4444;
-  --chatbot-unread-color: #fff;
-  --chatbot-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
-  --chatbot-radius: 1rem;
-  --chatbot-radius-full: 9999px;
-  --chatbot-font: 'Inter', 'Segoe UI', Arial, sans-serif;
-  --chatbot-font-size: 1rem;
-  --chatbot-message-font-size: 0.95rem;
-  --chatbot-header-font-size: 1.1rem;
-  --chatbot-input-bg: #f9fafb;
-  --chatbot-input-color: #1f2937;
-  --chatbot-placeholder: #6b7280;
-  --chatbot-send-bg: var(--chatbot-primary);
-  --chatbot-send-bg-hover: var(--chatbot-primary-dark);
-  --chatbot-send-color: #fff;
-  --chatbot-close-hover: #bfdbfe;
+export default function SaaS() {
+  return (
+    <ChatBot 
+      apiKey={process.env.NEXT_PUBLIC_GEMINI_API_KEY!}
+      companyName="Analytics Pro"
+      knowledge={saasKnowledge}
+      theme="dark"
+      storage={{ enabled: true }}
+      onMessageReceive={(msg) => {
+        // Track conversations for analytics
+        console.log('User asked:', msg);
+      }}
+    />
+  );
 }
-```
-
-You can override any of these to match your brand or design system.
-
-## Troubleshooting
-
-### Common Issues
-
-1. **"Unexpected token '<'" Error**: This means your API route is missing. Create the API route file as shown in step 2 above. See [API_SETUP.md](./API_SETUP.md) for detailed instructions.
-
-2. **API Key Error**: Make sure your Gemini API key is valid and has proper permissions
-
-3. **CORS Issues**: Ensure your API route is properly configured
-
-4. **Styling Issues**: Check if the CSS is being imported correctly
-
-5. **Knowledge Not Working**: Verify your knowledge object structure matches the interface
-
-### Quick Fix for "Unexpected token '<'" Error
-
-If you're getting this error, it means the API route is missing. Here's the quick fix:
-
-**For App Router** - Create `app/api/chat/route.ts`:
-```tsx
+📖 API Reference
+ChatBot Props
+Prop	Type	Default	Description
+apiKey	string	Required	Your Gemini API key
+companyName	string	Required	Company name displayed in header
+welcomeMessage	string	"Welcome! I'm your virtual assistant..."	Initial greeting
+position	string	"bottom-right"	Chat position (bottom-right, bottom-left, top-right, top-left)
+knowledge	any	{}	Any JSON structure with company information
+theme	string	"light"	"light" | "dark" | "custom"
+model	string	"gemini-2.0-flash"	Gemini model to use
+maxTokens	number	1000	Max response tokens
+temperature	number	0.7	Creativity (0-1)
+apiEndpoint	string	"/api/chat"	Custom API endpoint
+systemPrompt	string	undefined	Custom system prompt
+suggestions	string[]	[]	Quick suggestion buttons
+autoOpen	boolean	false	Auto-open on load
+disableAnimations	boolean	false	Disable animations
+storage	object	{ enabled: true }	Storage options (enabled, key, maxMessages)
+rateLimit	object	undefined	Rate limiting options (maxRequestsPerMinute, onRateLimit)
+locale	string	"en"	Language locale
+translations	object	{}	Custom translations
+customStyles	object	{}	Custom CSS variables
+onMessageSend	function	undefined	Send callback
+onMessageReceive	function	undefined	Receive callback
+onError	function	undefined	Error callback
+onOpen	function	undefined	Open callback
+onClose	function	undefined	Close callback
+chatHandler Function
+typescript
 import { chatHandler } from 'nextgen-chatbot';
+
+// Used in API routes
 export async function POST(request: Request) {
   return chatHandler(request);
 }
-```
+KnowledgeBuilder Methods
+Method	Description
+add(key, value)	Add any key-value pair
+addAll(object)	Add multiple items
+merge(object)	Merge with existing
+build()	Return the knowledge object
+🤝 Contributing
+Contributions are welcome! Here's how you can help:
 
-**For Pages Router** - Create `pages/api/chat.ts`:
-```tsx
-import { chatHandler } from 'nextgen-chatbot';
-import type { NextApiRequest, NextApiResponse } from 'next';
+Fork the repository
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method === 'POST') {
-    const response = await chatHandler(req as any);
-    const data = await response.json();
-    res.status(response.status).json(data);
-  } else {
-    res.status(405).json({ error: 'Method not allowed' });
-  }
-}
-```
+Create a feature branch: git checkout -b feature/AmazingFeature
 
-After creating the file, restart your development server.
+Commit changes: git commit -m 'Add AmazingFeature'
 
-### Debug Mode
+Push: git push origin feature/AmazingFeature
 
-Enable console logging to debug issues:
+Open a Pull Request
 
-```tsx
-<ChatBot 
-  apiKey="your-key"
-  companyName="My Company"
-  // Add console.log in your API route for debugging
-/>
-```
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## License
-
+Development Setup
+bash
+git clone https://github.com/yourusername/nextgen-chatbot.git
+cd nextgen-chatbot
+npm install
+npm run build
+📄 License
 MIT License - see LICENSE file for details.
 
-## Support
+🙏 Support
+📧 Email: support@nextgen-chatbot.com
 
-If you need help or have questions, please open an issue on GitHub. 
+🐛 Issues: GitHub Issues
+
+📚 Docs: Documentation
+
+💬 Discord: Join our Discord
+
+<div align="center"> <sub>Built with ❤️ by Jay Limbachiya</sub> <br/> <sub>© 2025 NextGen Chatbot. All rights reserved.</sub> </div> ```

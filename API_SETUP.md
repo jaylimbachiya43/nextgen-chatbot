@@ -90,10 +90,30 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 }
 ```
 
-### 3. Test the API Route
 
-You can test if your API route is working by visiting:
-- `http://localhost:3000/api/chat` (should show a method not allowed error, not a 404)
+## 3. Updated API_SETUP.md
+
+```markdown
+# API Route Setup Guide
+
+The error **"Unexpected token '<', "<!DOCTYPE..."** means your API route is not set up correctly. This guide will help you fix this.
+
+## The Problem
+
+When you see this error, it means the chatbot is trying to call `/api/chat` but getting an HTML page (like a 404 error page) instead of JSON. This happens when the API route file is missing or incorrectly configured.
+
+## Solution: Create the API Route
+
+### For Next.js App Router (app directory)
+
+Create a file at `app/api/chat/route.ts`:
+
+```typescript
+import { chatHandler } from 'nextgen-chatbot';
+
+export async function POST(request: Request) {
+  return chatHandler(request);
+}
 
 ### 4. Restart Your Development Server
 

@@ -1,14 +1,17 @@
 {
   "name": "nextgen-chatbot",
   "version": "1.0.10",
-  "description": "A powerful, customizable chatbot component for Next.js applications that integrates with Google's Gemini AI",
+  "description": "A production-ready, customizable chatbot component for Next.js applications with Google's Gemini AI integration",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "style": "dist/styles/chat.css",
   "scripts": {
-    "build": "tsc && mkdir -p dist/styles && cp src/styles/chat.css dist/styles/",
+    "build": "tsc && npm run copy-assets",
+    "copy-assets": "mkdir -p dist/styles && cp src/styles/*.css dist/styles/ && cp README.md dist/",
     "dev": "tsc --watch",
     "clean": "rm -rf dist",
-    "prepublishOnly": "npm run clean && npm run build"
+    "prepublishOnly": "npm run clean && npm run build",
+    "test": "echo \"No tests specified\""
   },
   "keywords": [
     "chatbot",
@@ -19,35 +22,42 @@
     "chat",
     "assistant",
     "typescript",
-    "component"
+    "component",
+    "production-ready"
   ],
   "dependencies": {
-    "@google/generative-ai": "^0.24.1",
-    "react": "^18.0.0"
+    "@google/generative-ai": "^0.24.1"
   },
   "peerDependencies": {
-    "next": ">=13.0.0 <100.0.0",
-    "react": "^18.0.0"
+    "next": ">=13.0.0",
+    "react": ">=17.0.0",
+    "react-dom": ">=17.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.5",
+    "@types/react": "^18.2.45",
+    "@types/react-dom": "^18.2.18",
+    "next": "^14.0.4",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "typescript": "^5.3.3"
   },
   "files": [
     "dist",
-    "dist/styles/chat.css",
-    "README.md"
+    "README.md",
+    "LICENSE"
   ],
   "author": "Jay Limbachiya",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/nextgen-chatbot.git"
+    "url": "https://github.com/jaylimbachiya43/nextgen-chatbot"
   },
   "bugs": {
-    "url": "https://github.com/yourusername/nextgen-chatbot/issues"
+    "url": "https://github.com/jaylimbachiya43/nextgen-chatbot/issues"
   },
-  "homepage": "https://github.com/yourusername/nextgen-chatbot#readme",
-  "devDependencies": {
-    "@types/node": "^24.0.3",
-    "@types/react": "^18.3.23",
-    "@types/react-dom": "^18.3.7",
-    "typescript": "^5.8.3"
+  "homepage": "https://github.com/jaylimbachiya43/nextgen-chatbot#readme",
+  "engines": {
+    "node": ">=14.0.0"
   }
 }

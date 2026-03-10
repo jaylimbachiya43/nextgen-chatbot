@@ -1,4 +1,12 @@
-import { CompanyKnowledge, CompanyInfo, Product, FAQ, Policies, ContactInfo } from '../types/chat';
+import { 
+  CompanyInfo, 
+  Product, 
+  FAQ, 
+  Policies, 
+  ContactInfo,
+  CompanyKnowledge,
+  FlexibleKnowledge 
+} from '../types/chat';
 
 /**
  * Utility class to help build company knowledge data
@@ -74,6 +82,14 @@ export class KnowledgeBuilder {
       }
     };
   }
+
+  /**
+   * Add any custom data (for flexible knowledge)
+   */
+  addCustom(key: string, value: any): this {
+    this.knowledge[key as keyof CompanyKnowledge] = value;
+    return this;
+  }
 }
 
 /**
@@ -107,6 +123,36 @@ export function createCompanyKnowledge(
   }
   
   return builder.build();
+}
+
+/**
+ * Create flexible knowledge from any JSON
+ */
+export function createFlexibleKnowledge(data: any): FlexibleKnowledge {
+  return data;
+}
+
+/**
+ * Validate if knowledge has required fields (optional)
+ */
+export function validateKnowledge(knowledge: any, requiredFields?: string[]): boolean {
+  if (!requiredFields || requiredFields.length === 0) {
+    return true;
+  }
+  
+  return requiredFields.every(field => {
+    const parts = field.split('.');
+    let current = knowledge;
+    
+    for (const part of parts) {
+      if (current === undefined || current === null) {
+        return false;
+      }
+      current = current[part];
+    }
+    
+    return true;
+  });
 }
 
 /**
@@ -224,5 +270,8 @@ export const knowledgeTemplates = {
         phone: '+1-000-000-0001'
       }
     }
-  })
-}; 
+  }),
+
+  // Create from any custom JSON
+  custom: (data: any): FlexibleKnowledge => data
+};

@@ -12,5 +12,10 @@ export { companyKnowledge } from './data/company-knowledge';
 export { 
   KnowledgeBuilder, 
   createCompanyKnowledge, 
+  createFlexibleKnowledge,
+  validateKnowledge,
   knowledgeTemplates 
 } from './utils/knowledge-builder';
+
+// Version
+export const version = '1.1.0';
